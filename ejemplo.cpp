@@ -10,145 +10,147 @@ struct Estudiante {
     Estudiante* siguiente;
 };
 
-class ListaEnlazada {
-private:
-    Estudiante* cabeza;
+// Función para agregar un estudiante a la lista enlazada
+void agregarEstudiante(Estudiante*& cabeza, string nombre, int codigo, float nota) {
+    Estudiante* nuevo = new Estudiante();
+    nuevo->nombre = nombre;
+    nuevo->codigo = codigo;
+    nuevo->nota = nota;
+    nuevo->siguiente = cabeza;
+    cabeza = nuevo;
+}
 
-public:
-    ListaEnlazada() {
-        cabeza = nullptr;
+// Función para mostrar la lista de estudiantes
+void mostrarEstudiantes(Estudiante* cabeza) {
+    if (!cabeza) {
+        cout << "La lista está vacía." << endl;
+        return;
     }
-
-    // Función para agregar un estudiante a la lista enlazada
-    void agregarEstudiante(string nombre, int codigo, float nota) {
-        Estudiante* nuevo = new Estudiante();
-        nuevo->nombre = nombre;
-        nuevo->codigo = codigo;
-        nuevo->nota = nota;
-        nuevo->siguiente = cabeza;
-        cabeza = nuevo;
+    Estudiante* actual = cabeza;
+    while (actual != Null) {
+        cout << "Nombre: " << actual->nombre << ", Código: " << actual->codigo << ", Nota: " << actual->nota << endl;
+        actual = actual->siguiente;
     }
+}
 
-    // Función para mostrar la lista de estudiantes
-    void mostrarEstudiantes() {
+// Método de burbuja para ordenar la lista de estudiantes por código
+void ordenarPorCodigo(Estudiante*& cabeza) {
+    if (!cabeza) return;
+    bool intercambiado;
+    do {
+        intercambiado = false;
         Estudiante* actual = cabeza;
-        if (!actual) {
-            cout << "La lista está vacía." << endl;
-            return;
-        }
-        while (actual != nullptr) {
-            cout << "Nombre: " << actual->nombre << ", Código: " << actual->codigo << ", Nota: " << actual->nota << endl;
-            actual = actual->siguiente;
-        }
-    }
+        Estudiante* anterior = Null;
 
-    // Método de burbuja para ordenar la lista de estudiantes por código (menor a mayor)
-    void ordenarPorCodigo() {
-        if (!cabeza) return;
-        bool intercambiado;
-        do {
-            intercambiado = false;
-            Estudiante* actual = cabeza;
-            Estudiante* anterior = nullptr;
-            while (actual->siguiente != nullptr) {
-                if (actual->codigo > actual->siguiente->codigo) {
-                    // Intercambiar los nodos
-                    Estudiante* temporal = actual->siguiente;
-                    actual->siguiente = temporal->siguiente;
-                    temporal->siguiente = actual;
-                    if (anterior == nullptr) {
-                        cabeza = temporal;
-                    } else {
-                        anterior->siguiente = temporal;
-                    }
-                    intercambiado = true;
+        while (actual->siguiente != Null) {
+            if (actual->codigo > actual->siguiente->codigo) {
+                Estudiante* temporal = actual->siguiente;
+                actual->siguiente = temporal->siguiente;
+                temporal->siguiente = actual;
+
+                if (anterior == Null) {
+                    cabeza = temporal;
+                } else {
+                    anterior->siguiente = temporal;
                 }
-                anterior = actual;
-                actual = actual->siguiente;
+                intercambiado = true;
             }
-        } while (intercambiado);
-    }
+            anterior = actual;
+            actual = actual->siguiente;
+        }
+    } while (intercambiado);
+}
 
-    // Método de burbuja para ordenar la lista de estudiantes por nota (mayor a menor)
-    void ordenarPorNota() {
-        if (!cabeza) return;
-        bool intercambiado;
-        do {
-            intercambiado = false;
-            Estudiante* actual = cabeza;
-            Estudiante* anterior = nullptr;
-            while (actual->siguiente != nullptr) {
-                if (actual->nota < actual->siguiente->nota) {
-                    // Intercambiar los nodos
-                    Estudiante* temporal = actual->siguiente;
-                    actual->siguiente = temporal->siguiente;
-                    temporal->siguiente = actual;
-                    if (anterior == nullptr) {
-                        cabeza = temporal;
-                    } else {
-                        anterior->siguiente = temporal;
-                    }
-                    intercambiado = true;
+// Método de burbuja para ordenar la lista de estudiantes por nota
+void ordenarPorNota(Estudiante*& cabeza) {
+    if (!cabeza) return;
+    bool intercambiado;
+    do {
+        intercambiado = false;
+        Estudiante* actual = cabeza;
+        Estudiante* anterior = Null;
+
+        while (actual->siguiente != Null) {
+            if (actual->nota < actual->siguiente->nota) {
+                Estudiante* temporal = actual->siguiente;
+                actual->siguiente = temporal->siguiente;
+                temporal->siguiente = actual;
+
+                if (anterior == Null) {
+                    cabeza = temporal;
+                } else {
+                    anterior->siguiente = temporal;
                 }
-                anterior = actual;
-                actual = actual->siguiente;
+                intercambiado = true;
             }
-        } while (intercambiado);
-    }
-
-    // Función para encontrar la mayor nota del curso
-    void mayorNota() {
-        if (!cabeza) {
-            cout << "La lista está vacía." << endl;
-            return;
-        }
-        Estudiante* actual = cabeza;
-        Estudiante* mejorEstudiante = actual;
-        while (actual != nullptr) {
-            if (actual->nota > mejorEstudiante->nota) {
-                mejorEstudiante = actual;
-            }
+            anterior = actual;
             actual = actual->siguiente;
         }
-        cout << "La mayor nota es: " << mejorEstudiante->nota << " de " << mejorEstudiante->nombre << endl;
-    }
+    } while (intercambiado);
+}
 
-    // Función para encontrar la menor nota del curso
-    void menorNota() {
-        if (!cabeza) {
-            cout << "La lista está vacía." << endl;
-            return;
-        }
-        Estudiante* actual = cabeza;
-        Estudiante* peorEstudiante = actual;
-        while (actual != nullptr) {
-            if (actual->nota < peorEstudiante->nota) {
-                peorEstudiante = actual;
-            }
-            actual = actual->siguiente;
-        }
-        cout << "La menor nota es: " << peorEstudiante->nota << " de " << peorEstudiante->nombre << endl;
+// Función para encontrar la mayor nota del curso
+void mayorNota(Estudiante* cabeza) {
+    if (!cabeza) {
+        cout << "La lista está vacía." << endl;
+        return;
     }
-
-    // Función para calcular el promedio de las notas del curso
-    void promedioNotas() {
-        if (!cabeza) {
-            cout << "La lista está vacía." << endl;
-            return;
+    Estudiante* actual = cabeza;
+    Estudiante* mejorEstudiante = actual;
+    while (actual != Null) {
+        if (actual->nota > mejorEstudiante->nota) {
+            mejorEstudiante = actual;
         }
-        Estudiante* actual = cabeza;
-        float suma = 0;
-        int contador = 0;
-        while (actual != nullptr) {
-            suma += actual->nota;
-            contador++;
-            actual = actual->siguiente;
-        }
-        float promedio = suma / contador;
-        cout << "El promedio de las notas es: " << promedio << endl;
+        actual = actual->siguiente;
     }
-};
+    cout << "La mayor nota es: " << mejorEstudiante->nota << " de " << mejorEstudiante->nombre << endl;
+}
 
+// Función para encontrar la menor nota del curso
+void menorNota(Estudiante* cabeza) {
+    if (!cabeza) {
+        cout << "La lista está vacía." << endl;
+        return;
+    }
+    Estudiante* actual = cabeza;
+    Estudiante* peorEstudiante = actual;
+    while (actual != Null) {
+        if (actual->nota < peorEstudiante->nota) {
+            peorEstudiante = actual;
+        }
+        actual = actual->siguiente;
+    }
+    cout << "La menor nota es: " << peorEstudiante->nota << " de " << peorEstudiante->nombre << endl;
+}
+
+// Función para calcular el promedio de las notas del curso
+void promedioNotas(Estudiante* cabeza) {
+    if (!cabeza) {
+        cout << "La lista está vacía." << endl;
+        return;
+    }
+    Estudiante* actual = cabeza;
+    float suma = 0;
+    int contador = 0;
+    while (actual != Null) {
+        suma += actual->nota;
+        contador++;
+        actual = actual->siguiente;
+    }
+    float promedio = suma / contador;
+    cout << "El promedio de las notas es: " << promedio << endl;
+}
+
+// Función para liberar la memoria de la lista
+void liberarLista(Estudiante*& cabeza) {
+    while (cabeza != Null) {
+        Estudiante* siguiente = cabeza->siguiente;
+        delete cabeza;
+        cabeza = siguiente;
+    }
+}
+
+// Función para mostrar el menú
 void mostrarMenu() {
     cout << "----- MENÚ -----" << endl;
     cout << "1. Ingresar datos de estudiantes" << endl;
@@ -163,54 +165,59 @@ void mostrarMenu() {
 }
 
 int main() {
-    ListaEnlazada lista;
+    Estudiante* lista = Null; // Inicializar la lista
     int opcion;
     do {
         mostrarMenu();
         cout << "Seleccione una opción: ";
         cin >> opcion;
+        cin.ignore(); // Limpiar el buffer de entrada
         switch (opcion) {
             case 1: {
                 string nombre;
                 int codigo;
                 float nota;
                 cout << "Ingrese el nombre del estudiante: ";
-                cin >> nombre;
+                getline(cin, nombre);
                 cout << "Ingrese el código del estudiante: ";
                 cin >> codigo;
                 cout << "Ingrese la nota del estudiante: ";
                 cin >> nota;
-                lista.agregarEstudiante(nombre, codigo, nota);
+                agregarEstudiante(lista, nombre, codigo, nota);
                 break;
             }
             case 2:
-                lista.ordenarPorCodigo();
-                lista.mostrarEstudiantes();
+                ordenarPorCodigo(lista);
+                mostrarEstudiantes(lista);
                 break;
             case 3:
-                lista.ordenarPorNota();
-                lista.mostrarEstudiantes();
+                ordenarPorNota(lista);
+                mostrarEstudiantes(lista);
                 break;
             case 4:
-                lista.mayorNota();
+                mayorNota(lista);
                 break;
             case 5:
-                lista.menorNota();
+                menorNota(lista);
                 break;
             case 6:
-                lista.promedioNotas();
+                promedioNotas(lista);
                 break;
             case 7:
-                lista.mostrarEstudiantes();
+                mostrarEstudiantes(lista);
                 break;
             case 8:
                 cout << "Saliendo del programa..." << endl;
+                liberarLista(lista); // Liberar memoria antes de salir
                 break;
             default:
                 cout << "Opción no válida." << endl;
                 break;
         }
     } while (opcion != 8);
-
     return 0;
 }
+       
+   
+      
+          
